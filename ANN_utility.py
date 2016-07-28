@@ -1,4 +1,5 @@
 import numpy as np
+import random as rd
 
 """Variables required to represent a neural network"""
 #Numbers of nodes at each layer
@@ -17,7 +18,7 @@ def weight_initialize():
     nr_weights = len(layer_node_nr)-1
     for i in range(0,nr_weights):
         #construct weight matrix W
-        W = np.random.normal(scale=0.1, size = (layer_node_nr[i],layer_node_nr[i+1]))
+        W = np.random.normal(scale=0.01, size = (layer_node_nr[i],layer_node_nr[i+1]))
         #append in network weight
         network_weight.append(W)
 
@@ -39,6 +40,14 @@ def forward(input_layer):
         input_layer_values.append(temp_layer)
         temp_layer = sigmoid(temp_layer)
         output_layer_values.append(temp_layer)
+
+def net_response(input_layer):
+    nr_weights = len(layer_node_nr)-1
+    temp_layer = input_layer
+    for i in range(0,nr_weights):
+        temp_layer = np.dot(temp_layer,network_weight[i])
+        temp_layer = sigmoid(temp_layer)
+    return temp_layer
 
 def calculate_delta(output):
     nr_weights = len(layer_node_nr)-1
@@ -99,23 +108,51 @@ weight_initialize()
 ##print(delta)
 ##calculate_weight_delta()
 ##adjust_weights(0.5)
-##inp = [[0,0],[0,1],[1,0],[1,1]]
-##out = [1,0,0,1]
-##for i in range(1,500):
-##    for j in range(0,4):
-##        input_layer_values = []
-##        output_layer_values = []
-##        delta = []
-##        weight_delta = []
-##        print(learn_network(np.array(inp[j]),np.array(out[j]),0.5))
-##        
+inp = [[0,0],[0,1],[1,0],[1,1]]
+out = [1,0,0,1]
+print(network_weight) 
+for i in range(1,10):
+    for j in range(0,4):
+        input_layer_values = []
+        output_layer_values = []
+        delta = []
+        weight_delta = []
+        #print(learn_network(np.array([inp[j]]),np.array([[out[j]]]),0.5))
+        learn_network(np.array([inp[j]]),np.array([[out[j]]]),0.5)
+print(network_weight)       
 ##print(network_weight)
 ##print(weight_delta)
 ##g = np.array(out)
 ##print(sigmoid(g))
-for i in range(1,100):
-    input_layer_values = []
-    output_layer_values = []
-    delta = []
-    weight_delta = []
-    print(learn_network(np.array([[1,3]]),np.array([[0.3]]),0.5))
+
+def func(x,y):
+    return (((x*x + y)-3)/32)
+
+##x = rd.uniform(1,5)
+##y = rd.uniform(2,10)
+##out = func(x,y)
+##
+##for i in range(1,1000):
+##    input_layer_values = []
+##    output_layer_values = []
+##    delta = []
+##    weight_delta = []
+##    x = rd.uniform(1,5)
+##    y = rd.uniform(2,10)
+##    out = func(x,y)
+##    learn_network(np.array([[x,y]]),np.array([[out]]),0.1)
+##
+##x = rd.uniform(1,5)
+##y = rd.uniform(2,10)
+##out = func(x,y)
+##
+##for i in range(1,10):
+##    input_layer_values = []
+##    output_layer_values = []
+##    delta = []
+##    weight_delta = []
+##    x = rd.uniform(1,5)
+##    y = rd.uniform(2,10)
+##    out = func(x,y)
+##    print(out)
+##    print(net_response(np.array([[x,y]])))
