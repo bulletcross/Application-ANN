@@ -28,6 +28,7 @@ def sigmoid(x):
 
 def sigmoid_der(x):
     y = sigmoid(x)
+    #print(y)
     return y/(1-y)
 
 def forward(input_layer):
@@ -97,8 +98,8 @@ def learn_network(input_value, output_value, scale):
     return error
 
 
-layer_node_nr = [2,3,4,1]
-weight_initialize()
+##layer_node_nr = [2,3,4,1]
+##weight_initialize()
 ##print(network_weight)
 ##forward([[1,2]])
 ##print(input_layer_values)
@@ -108,31 +109,31 @@ weight_initialize()
 ##print(delta)
 ##calculate_weight_delta()
 ##adjust_weights(0.5)
-inp = [[0,0],[0,1],[1,0],[1,1]]
-out = [1,0,0,1]
-print(network_weight) 
-for i in range(1,10):
-    for j in range(0,4):
-        input_layer_values = []
-        output_layer_values = []
-        delta = []
-        weight_delta = []
-        #print(learn_network(np.array([inp[j]]),np.array([[out[j]]]),0.5))
-        learn_network(np.array([inp[j]]),np.array([[out[j]]]),0.5)
-print(network_weight)       
+##inp = [[0,0],[0,1],[1,0],[1,1]]
+##out = [1,0,0,1]
+##print(network_weight) 
+##for i in range(1,50):
+##    for j in range(0,4):
+##        input_layer_values = []
+##        output_layer_values = []
+##        delta = []
+##        weight_delta = []
+##        #print(learn_network(np.array([inp[j]]),np.array([[out[j]]]),0.5))
+##        learn_network(np.array([inp[0]]),np.array([[out[0]]]),0.5)
+##print(network_weight)       
 ##print(network_weight)
 ##print(weight_delta)
 ##g = np.array(out)
 ##print(sigmoid(g))
 
-def func(x,y):
-    return (((x*x + y)-3)/32)
-
+##def func(x,y):
+##    return (((x*x + y)-3)/32)
+##
 ##x = rd.uniform(1,5)
 ##y = rd.uniform(2,10)
 ##out = func(x,y)
 ##
-##for i in range(1,1000):
+##for i in range(1,10):
 ##    input_layer_values = []
 ##    output_layer_values = []
 ##    delta = []
@@ -140,7 +141,7 @@ def func(x,y):
 ##    x = rd.uniform(1,5)
 ##    y = rd.uniform(2,10)
 ##    out = func(x,y)
-##    learn_network(np.array([[x,y]]),np.array([[out]]),0.1)
+##    print(learn_network(np.array([[x,y]]),np.array([[out]]),0.1))
 ##
 ##x = rd.uniform(1,5)
 ##y = rd.uniform(2,10)
@@ -156,3 +157,15 @@ def func(x,y):
 ##    out = func(x,y)
 ##    print(out)
 ##    print(net_response(np.array([[x,y]])))
+
+##layer_node_nr = [2,3,1]
+##W = np.array([[0.3,0.1,0.8],[0.6,0.5,0.4]])
+##network_weight.append(W)
+##W = np.array([[0.2],[0.3],[0.9]])
+##network_weight.append(W)
+##inp = np.array([[1,2]])
+##out = np.array([[0.8]])
+##forward(inp)
+##calculate_delta(out)
+##calculate_weight_delta()
+##print(weight_delta)
