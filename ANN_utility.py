@@ -11,14 +11,15 @@ input_layer_values = []
 output_layer_values = []
 #delta value for gradient computation
 delta = []
-weight_delta = []
+
+w_delta = []
 
 """Initialize weight of network with small random values"""
 def weight_initialize():
     nr_weights = len(layer_node_nr)-1
     for i in range(0,nr_weights):
         #construct weight matrix W
-        W = np.random.normal(scale=0.01, size = (layer_node_nr[i],layer_node_nr[i+1]))
+        W = np.random.normal(scale=0.1, size = (layer_node_nr[i],layer_node_nr[i+1]))
         #append in network weight
         network_weight.append(W)
 
@@ -27,10 +28,9 @@ def sigmoid(x):
     return 1/(1+np.exp(-x))
 
 def sigmoid_der(x):
-    y = sigmoid(x)
-    #print(y)
-    return y/(1-y)
+    return np.exp(-x)/((1+np.exp(-x))**2)
 
+"""forward function"""
 def forward(input_layer):
     nr_weights = len(layer_node_nr)-1
     temp_layer = input_layer
@@ -42,6 +42,7 @@ def forward(input_layer):
         temp_layer = sigmoid(temp_layer)
         output_layer_values.append(temp_layer)
 
+"""output through forward"""
 def net_response(input_layer):
     nr_weights = len(layer_node_nr)-1
     temp_layer = input_layer
@@ -50,122 +51,31 @@ def net_response(input_layer):
         temp_layer = sigmoid(temp_layer)
     return temp_layer
 
+"""Back propagation procedures"""
 def calculate_delta(output):
     nr_weights = len(layer_node_nr)-1
-##    print(nr_weights)
-    #print(output)
-    #print(output_layer_values[nr_weights])
     delta.append((output_layer_values[nr_weights]-output)*sigmoid_der(input_layer_values[nr_weights]))
-    #print(delta[-1].shape)
     for i in range(nr_weights-1,0,-1):
-##        print(network_weight[i].shape)
-##        print(network_weight[i].transpose().shape)
-##        print(delta[-1].shape)
-##        print(network_weight[i].transpose())
-##        print(delta[-1])
-##        print(delta)
-        temp = (np.dot(network_weight[i],delta[-1]))
-        #print(temp.shape)
-        #print(input_layer_values[i].shape)
-        #print(sigmoid_der(input_layer_values[i]))
-        delta.append(temp*sigmoid_der(input_layer_values[i]).transpose())
-        #print(delta[-1].shape)
+        temp = (np.dot(delta[-1],network_weight[i].transpose()))
+        delta.append(temp*sigmoid_der(input_layer_values[i]))
     delta.reverse()
     
 def calculate_weight_delta():
     nr_weights = len(layer_node_nr)-1
     for i in range(0,nr_weights):
-        #print(output_layer_values[i])
-        #print(delta[i])
-        #print(output_layer_values[i].shape)
-        #print(delta[i].shape)
-        weight_delta.append(np.dot(output_layer_values[i].transpose(),delta[i].transpose()))
+        weight_delta.append(np.dot(output_layer_values[i].transpose(),delta[i]))
 
 def adjust_weights(scale):
     nr_weights = len(layer_node_nr)-1
     for i in range(0,nr_weights):
-        network_weight[i] = network_weight[i] - scale*weight_delta[i]
+        network_weight[i] = network_weight[i] - (scale*weight_delta[i])
 
-def learn_network(input_value, output_value, scale):
-    #print(input_value)
-    #print(output_value)
-    
+"""Forward backward combned"""
+def learn_network(input_value, output_value, scale, error_threshold):
     forward(input_value)
-    calculate_delta(output_value)
-    calculate_weight_delta()
-    adjust_weights(scale)
     error = np.sum((output_value-output_layer_values[-1])**2)
+    if error > error_threshold:
+        calculate_delta(output_value)
+        calculate_weight_delta()
+        adjust_weights(scale)
     return error
-
-
-##layer_node_nr = [2,3,4,1]
-##weight_initialize()
-##print(network_weight)
-##forward([[1,2]])
-##print(input_layer_values)
-##print(output_layer_values)
-
-##calculate_delta(np.array([[7]]))
-##print(delta)
-##calculate_weight_delta()
-##adjust_weights(0.5)
-##inp = [[0,0],[0,1],[1,0],[1,1]]
-##out = [1,0,0,1]
-##print(network_weight) 
-##for i in range(1,50):
-##    for j in range(0,4):
-##        input_layer_values = []
-##        output_layer_values = []
-##        delta = []
-##        weight_delta = []
-##        #print(learn_network(np.array([inp[j]]),np.array([[out[j]]]),0.5))
-##        learn_network(np.array([inp[0]]),np.array([[out[0]]]),0.5)
-##print(network_weight)       
-##print(network_weight)
-##print(weight_delta)
-##g = np.array(out)
-##print(sigmoid(g))
-
-##def func(x,y):
-##    return (((x*x + y)-3)/32)
-##
-##x = rd.uniform(1,5)
-##y = rd.uniform(2,10)
-##out = func(x,y)
-##
-##for i in range(1,10):
-##    input_layer_values = []
-##    output_layer_values = []
-##    delta = []
-##    weight_delta = []
-##    x = rd.uniform(1,5)
-##    y = rd.uniform(2,10)
-##    out = func(x,y)
-##    print(learn_network(np.array([[x,y]]),np.array([[out]]),0.1))
-##
-##x = rd.uniform(1,5)
-##y = rd.uniform(2,10)
-##out = func(x,y)
-##
-##for i in range(1,10):
-##    input_layer_values = []
-##    output_layer_values = []
-##    delta = []
-##    weight_delta = []
-##    x = rd.uniform(1,5)
-##    y = rd.uniform(2,10)
-##    out = func(x,y)
-##    print(out)
-##    print(net_response(np.array([[x,y]])))
-
-##layer_node_nr = [2,3,1]
-##W = np.array([[0.3,0.1,0.8],[0.6,0.5,0.4]])
-##network_weight.append(W)
-##W = np.array([[0.2],[0.3],[0.9]])
-##network_weight.append(W)
-##inp = np.array([[1,2]])
-##out = np.array([[0.8]])
-##forward(inp)
-##calculate_delta(out)
-##calculate_weight_delta()
-##print(weight_delta)
