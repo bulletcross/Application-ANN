@@ -18,6 +18,20 @@ def handle_event(event,pg,x,y):
 
 learn_network()
 """Action corresponding to ANN output"""
+def handle_event_agent(ball_type,x,y,b_x):
+    #simulate three action and take the one with maximum Q value
+    curr_state = [ball_type,x,y,b_x]
+    max_action = 0
+    max_q = 0
+    for action in range(-1,2):
+        state_reached = state_transition(curr_state,action)
+        q = 0
+        for new_state in state_reached:
+            q = q + transition_probability(curr_state,action,new_state)*get_state_value(new_state)
+        if max_q < q:
+            max_q = q
+            max_action = action
+    return (clamp(b_x + int(max_action),0,3),3)
 ##def handle_event_agent(ball_type,x,y,b_x):
 ##    return (clamp(b_x + int(action_output[ball_type][x][y][b_x]),0,3),3)
         

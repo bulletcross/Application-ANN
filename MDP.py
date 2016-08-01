@@ -1,15 +1,34 @@
 from QL_function import *
 import numpy as np
+import random as rd
 
-iteration = 10
+#pybrain ANN tools
+from pybrain.tools.shortcuts import buildNetwork
+from pybrain.datasets import SupervisedDataSet
+from pybrain.supervised.trainers import BackpropTrainer
+from pybrain.structure import SigmoidLayer, LinearLayer
+
+iteration = 1000
 gamma = 0.8
+#network training iteration
+net_iteration = 1000
+
+#pybrian ANN initialization
+net = buildNetwork(4,100,100,1, bias=True, hiddenclass = SigmoidLayer, outclass = LinearLayer)
+ds = SupervisedDataSet(4,1)
+
+
 """Utilities for value iteration algorithm"""
 #This function has to be chnaged to obtain Q value from network
-def get_state_value(state,state_value):
-    if state[0] == -1:
-        return state_value[0][state[1]][state[2]][state[3]]
-    else:
-        return state_value[state[0]][state[1]][state[2]][state[3]]
+def get_state_value(state):
+    return net.activate([state[0],state[1],state[2],state[3]])
+
+
+##def get_state_value(state,state_value):
+##    if state[0] == -1:
+##        return state_value[0][state[1]][state[2]][state[3]]
+##    else:
+##        return state_value[state[0]][state[1]][state[2]][state[3]]
 
 ##def set_state_value(state,state_value,new_value):
 ##    if state[0] == -1:
@@ -49,6 +68,7 @@ def learn_network():
     #Control the iteration from variable
     for i in range(0,iteration):
         for state in states:
+            best_q_value = 0
             for action in actions:
                 
                 possible_states = state_transition(state,action)
@@ -56,14 +76,23 @@ def learn_network():
                 
                 for new_state in possible_states:
                     #get_state_value has to be chnaged internally
-                    summation +=  transition_probability(state,action,new_state)*get_state_value(new_state,state_value)
+                    summation +=  transition_probability(state,action,new_state)*get_state_value(new_state)
+                    #summation +=  transition_probability(state,action,new_state)*get_state_value(new_state,state_value)
                 q_value = reward(state) + gamma*summation
-                #neural network has to be updated now
-                
-                if get_state_value(state,state_value) < q_value:
+                #ntake best Q value among actions and update
+                if best_q_value < q_value:
+                    best_q_value = q_value   
+                #if get_state_value(state,state_value) < q_value:
                     #set_state_value(state,state_value,q_value)
                     #set_action_value(state,action_value,action)
                     #update network weight here
+
+            #update network with best Q value obtained for state state
+            for j in range(0,net_iteration):
+                ds.addSample((state[0],state[1],state[2],state[3]),(best_q_value))
+                trainer = BackpropTrainer(net,ds)
+                trainer.train()
+                ds.clear()
     
     #print state_value
     #return action_value
