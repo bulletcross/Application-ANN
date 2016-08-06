@@ -8,13 +8,13 @@ from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.structure import SigmoidLayer, LinearLayer
 
-iteration = 1000
+iteration = 100
 gamma = 0.8
 #network training iteration
-net_iteration = 1000
+net_iteration = 100
 
 #pybrian ANN initialization
-net = buildNetwork(4,100,100,1, bias=True, hiddenclass = SigmoidLayer, outclass = LinearLayer)
+net = buildNetwork(4,10,10,1, bias=True, hiddenclass = SigmoidLayer, outclass = LinearLayer)
 ds = SupervisedDataSet(4,1)
 
 
@@ -67,6 +67,7 @@ def learn_network():
 
     #Control the iteration from variable
     for i in range(0,iteration):
+        print("Learning")
         for state in states:
             best_q_value = 0
             for action in actions:

@@ -23,8 +23,6 @@ def start_game():
         
         disp.fill(bg_color)
         
-        
-        
         draw(neutral_ball,disp,pos_x[b_x],pos_y[b_y])
         if collision(b_x, b_y, x, y):
             if ball_type == 0:
@@ -40,7 +38,7 @@ def start_game():
             draw(positive_ball,disp,pos_x[x],pos_y[y])
 
         #Has to be changed
-        #(b_x,b_y) = handle_event_agent(ball_type,x,y,b_x)
+        (b_x,b_y) = handle_event_agent(ball_type,x,y,b_x)
         
         y = y+1
         
